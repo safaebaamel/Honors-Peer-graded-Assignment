@@ -1,0 +1,95 @@
+<div class="container"
+     fxLayout="row"
+     fxLayout.sm="column"
+     fxLayout.xs="column"
+     fxLayoutAlign.gt-md="space-around center"
+     fxLayoutGap="10px"
+     fxLayoutGap.xs="0">
+
+  <div fxFlex="40">
+    <div fxFlex *ngIf="tour" [@visibility]="visibility" [@expand]>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <h3>{{tour.name | uppercase}}</h3>
+          </mat-card-title>
+        </mat-card-header>
+        <img mat-card-image src="{{ baseURL + tour.image }}" alt={{tour.name}}>
+        <mat-card-content>
+          <p>{{tour.description}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button [routerLink]="['/tourdetail', prev]"><span class="fa fa-chevron-left fa-lg"></span>
+          </button>
+          <button mat-button (click)="goBack()">BACK</button>
+          <button mat-button>LIKE</button>
+          <button mat-button>SHARE</button>
+          <span class="flex-spacer"></span>
+          <button mat-button [routerLink]="['/tourdetail', next]"><span class="fa fa-chevron-right fa-lg"></span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+  <div fxFlex [hidden]="tour || errMess">
+    <mat-spinner></mat-spinner>
+    <h4>Loading . . . Please Wait</h4>
+  </div>
+  <div fxFlex *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
+  </div>
+  <div fxFlex="40" *ngIf="tour" [@visibility]="visibility" [@expand]>
+    <mat-list fxFlex >
+      <h3>Comments</h3>
+      <mat-list-item *ngFor="let comment of tour.comments">
+        <h4 matLine>{{comment.comment}}</h4>
+        <p matLine>{{comment.rating}}</p>
+        <p matLine>
+          <span> -- {{comment.author}} {{comment.date}} </span>
+        </p>
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <h3>Send us your Feedback</h3>
+    <div *ngIf="commentForm.valid">
+          <h4 matLine>{{commentForm.value.comment}}</h4>
+          <p matLine>{{commentForm.value.rating}}</p>
+          <p matLine>
+            <span> -- {{commentForm.value.author}}</span>
+          </p>
+    </div>
+
+    <form novalidate [formGroup]="commentForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+      <p>
+        <mat-form-field class="full-width">
+          <input matInput formControlName="author" placeholder="Name" type="text" required>
+          <mat-error *ngIf="formErrors.author">
+            {{formErrors.author}}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-slider thumbLabel tickInterval = 1 matInput min="1" max="5" step="1" value="5"
+                    formcontrolname="rating"
+                    [(ngModel)]="rating" [ngModelOptions]="{standalone: true}"
+                    (change)="updateSliderValue($event)"></mat-slider>
+        <mat-form-field class="full-width">
+          <input matInput formControlName="rating" type="text" [hidden]="true">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="full-width">
+          <textarea matInput formControlName="comment" placeholder="Your comment" rows=12></textarea>
+          <mat-error *ngIf="formErrors.comment">
+            {{formErrors.comment}}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white"
+              [disabled]="commentForm.invalid">Submit
+      </button>
+    </form>
+  </div>
+</div>

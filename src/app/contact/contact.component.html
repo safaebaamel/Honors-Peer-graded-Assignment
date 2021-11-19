@@ -1,0 +1,113 @@
+<div class="container"
+     fxLayout="column"
+     fxLayoutGap="10px">
+
+  <div fxFlex>
+    <div>
+      <h3>Contact Us</h3>
+      <hr>
+    </div>
+  </div>
+
+  <div fxFlex>
+    <h3>Location Information</h3>
+    <div fxLayout="column" fxLayout.gt-sm="row">
+      <div fxFlex="50" fxFlexOffset="20px">
+        <h4>Our Address</h4>
+        <address style="text-size: 80%">
+          220017, Melnikayte 4<br> Minsk<br> BELARUS<br>
+          <i class="fa fa-phone"></i>: +375 29 234 5678<br>
+          <i class="fa fa-fax"></i>: +375 29 234 5678<br>
+          <i class="fa fa-envelope"></i>:
+          <a href="mailto:confusion@food.net">kayaking@mail.ru</a>
+        </address>
+        <p></p>
+        <div>
+          <a mat-raised-button href="tel:+85212345678"><i class="fa fa-phone"></i> Call</a>
+          <a mat-raised-button><i class="fa fa-skype"></i> Skype</a>
+          <a mat-raised-button href="mailto:confusion@food.net"><i class="fa fa-envelope-o"></i> Email</a>
+        </div>
+      </div>
+      <div fxFlex="40">
+        <h4>Map of our Location</h4>
+      </div>
+    </div>
+  </div>
+
+  <div fxFlex [@visibility]="visibilityFeedBack" [@expand]>
+    <h3>Your submission</h3>
+    <div>
+      <p matLine>First name: {{feedbackFromServer?.firstname}}</p>
+      <p matLine>Last name: {{feedbackFromServer?.lastname}}</p>
+      <p matLine>Tel. number: {{feedbackFromServer?.telnum}}</p>
+      <p matLine>Email: {{feedbackFromServer?.email}}</p>
+      <p matLine>Contact you?: {{feedbackFromServer?.agree}}</p>
+      <p matLine>How?: {{feedbackFromServer?.contacttype}}</p>
+      <p matLine>Feedback: {{feedbackFromServer?.message}}</p>
+    </div>
+  </div>
+  <div fxFlex>
+    <div fxFlex fxFlexOffset="20px" class="form-size" [@visibility]="visibility" [@expand]>
+      <h3>Send us your Feedback</h3>
+
+      <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="firstname" placeholder="First Name" type="text" required>
+            <mat-error *ngIf="formErrors.firstname">
+              {{formErrors.firstname}}
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="lastname" placeholder="Last Name" type="text" required>
+            <mat-error *ngIf="formErrors.lastname">
+              {{formErrors.lastname}}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="telnum" placeholder="Tel. Number" type="tel" required pattern="[0-9]*">
+            <mat-error *ngIf="formErrors.telnum">
+              {{formErrors.telnum}}
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="email" placeholder="Email" type="email" email required>
+            <mat-error *ngIf="formErrors.email">
+              {{formErrors.email}}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <table class="form-size">
+          <td>
+            <mat-slide-toggle formControlName="agree">May we contact you?</mat-slide-toggle>
+          </td>
+          <td>
+            <mat-select placeholder="How?" formControlName="contacttype">
+              <mat-option *ngFor="let ctype of contactType" [value]="ctype">
+                {{ ctype }}
+              </mat-option>
+            </mat-select>
+          </td>
+        </table>
+        <p>
+          <mat-form-field class="full-width">
+            <textarea matInput formControlName="message" placeholder="Your Feedback" rows=12></textarea>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+                [disabled]="feedbackForm.invalid">Submit
+        </button>
+      </form>
+    </div>
+    <div fxFlex [hidden]="!feedback || errMess">
+      <mat-spinner></mat-spinner>
+      <h4>Loading . . . Please Wait</h4>
+    </div>
+    <div fxFlex *ngIf="errMess">
+      <h2>Error</h2>
+      <h4>{{errMess}}</h4>
+    </div>
+  </div>
+</div>
